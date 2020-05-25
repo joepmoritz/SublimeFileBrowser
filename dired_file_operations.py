@@ -388,6 +388,22 @@ class DiredCopyFilesCommand(TextCommand, DiredBaseCommand):
         self.set_status()
 
 
+class DiredCopyFilePathsCommand(TextCommand, DiredBaseCommand):
+    '''Store filename(s) in settings, when user copy or cut'''
+    def run(self, edit, which='path'):
+        self.index = self.get_all()
+        filenames = self.get_marked(full=True) or self.get_selected(parent=False, full=True)
+        if not filenames:
+            return sublime.status_message('Nothing chosen')
+
+        if which == 'file':
+            filenames = [basename(f) for f in filenames]
+        elif which == 'directory':
+            filenames = [dirname(f) for f in filenames]
+
+        sublime.set_clipboard('\n'.join(filenames))
+
+
 class DiredPasteFilesCommand(TextCommand, DiredBaseCommand):
     '''Init file operation(s) for stored names in settings, when user paste'''
     def run(self, edit):

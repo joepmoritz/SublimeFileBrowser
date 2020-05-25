@@ -76,6 +76,33 @@
       ]
   },
   {
+      "keys": ["ctrl+shift+c", "f"],
+      "command": "dired_copy_file_paths",
+      "args": { "which": "file" },
+      "context": [
+        { "key": "selector", "operator": "equal", "operand": "text.dired" },
+        { "key": "setting.dired_rename_mode", "operand": false }
+      ]
+  },
+  {
+      "keys": ["ctrl+shift+c", "d"],
+      "command": "dired_copy_file_paths",
+      "args": { "which": "directory" },
+      "context": [
+        { "key": "selector", "operator": "equal", "operand": "text.dired" },
+        { "key": "setting.dired_rename_mode", "operand": false }
+      ]
+  },
+  {
+      "keys": ["ctrl+shift+c", "p"],
+      "command": "dired_copy_file_paths",
+      "args": { "which": "path" },
+      "context": [
+        { "key": "selector", "operator": "equal", "operand": "text.dired" },
+        { "key": "setting.dired_rename_mode", "operand": false }
+      ]
+  },
+  {
       "keys": ["r"],
       "command": "dired_refresh",
       "context": [

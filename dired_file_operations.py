@@ -371,8 +371,8 @@ class DiredCopyFilesCommand(TextCommand, DiredBaseCommand):
         if not filenames:
             return sublime.status_message('Nothing chosen')
         settings  = sublime.load_settings('dired.sublime-settings')
-        copy_list = settings.get('dired_to_copy', [])
-        cut_list  = settings.get('dired_to_move', [])
+        copy_list = []
+        cut_list  = []
         # copied item shall not be added into cut list, and vice versa
         for f in filenames:
             if cut:

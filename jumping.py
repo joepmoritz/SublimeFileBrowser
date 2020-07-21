@@ -49,13 +49,14 @@ def jump_names():
 
 
 class DiredJumpCommand(TextCommand, DiredBaseCommand):
-    def run(self, edit, new_window=False):
+    def run(self, edit, new_window=False, new_tab=True):
         jp = jump_points()
         if not jp:
             status_message("No jump points available. To create jump point for this directory use 'P'.")
             return
         # show_quick_panel didn't work with dict_items
         self.new_window = new_window
+        self.new_tab = new_tab
         self.jump_points = [[n, t] for n, t in jp]
         self.display_jump_points = []
         longest_name = max([len(n) for n in jump_names().values()])
@@ -75,7 +76,9 @@ class DiredJumpCommand(TextCommand, DiredBaseCommand):
             settings = load_settings('dired.sublime-settings')
             smart_jump = settings.get('dired_smart_jump', False)
             auto = self.new_window == 'auto'
-            if self.new_window is True or ((not smart_jump) and auto) or (smart_jump and auto and len(self.view.window().views()) > 0):
+            if self.new_tab:
+                show(self.view.window(), target)
+            elif self.new_window is True or ((not smart_jump) and auto) or (smart_jump and auto and len(self.view.window().views()) > 0):
                 self.view.run_command("dired_open_in_new_window", {"project_folder": [target]})
             else:
                 show(self.view.window(), target, view_id=self.view.id())

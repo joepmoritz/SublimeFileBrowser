@@ -432,12 +432,15 @@ class DiredSelect(TextCommand, DiredBaseCommand):
             return True
         return False
 
-    def open_item(self, fqn, window, new_view):
+    def open_item(self, fqn, window, new_view, rightmost_tab=True):
         if isdir(fqn):
             show(window, fqn, ignore_existing=new_view)
         elif exists(fqn):  # ignore 'item <error>'
             self.last_created_view = window.open_file(fqn)
-        else:
+            if rightmost_tab:
+                group, index = window.get_view_index(self.last_created_view)
+                view_count = len(window.views_in_group(group))
+                window.set_view_index(self.last_created_view, group, view_count - 1)
             sublime.status_message(u'File does not exist (%s)' % (basename(fqn.rstrip(os.sep)) or fqn))
 
     def focus_other_group(self, window):

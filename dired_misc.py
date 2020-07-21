@@ -486,29 +486,29 @@ class DiredHoverProperties(sublime_plugin.ViewEventListener, DiredBaseCommand):
             self.view.run_command('dired_preview_directory', {'fqn': path, 'point': self.name_point})
 
 
-class DiredHijackNewWindow(EventListener):
-    def on_window_command(self, window, command_name, args):
-        if command_name != "new_window":
-            return
-        hijack_window()
+# class DiredHijackNewWindow(EventListener):
+#     def on_window_command(self, window, command_name, args):
+#         if command_name != "new_window":
+#             return
+#         hijack_window()
 
 
-class DiredHideEmptyGroup(EventListener):
-    def on_close(self, view):
-        if not 'dired' in view.scope_name(0):
-            return
-        emit_event(u'view_closed', view.id())
+# class DiredHideEmptyGroup(EventListener):
+#     def on_close(self, view):
+#         if not 'dired' in view.scope_name(0):
+#             return
+#         emit_event(u'view_closed', view.id())
 
-        w = sublime.active_window()
-        # check if closed view was a single one in group
-        if ST3:
-            single = not w.views_in_group(0) or not w.views_in_group(1)
-        else:
-            single = ([view.id()] == [v.id() for v in w.views_in_group(0)] or
-                      [view.id()] == [v.id() for v in w.views_in_group(1)])
-        if w.num_groups() == 2 and single:
-            # without timeout ST may crash
-            sublime.set_timeout(lambda: w.set_layout({"cols": [0.0, 1.0], "rows": [0.0, 1.0], "cells": [[0, 0, 1, 1]]}), 300)
+#         w = sublime.active_window()
+#         # check if closed view was a single one in group
+#         if ST3:
+#             single = not w.views_in_group(0) or not w.views_in_group(1)
+#         else:
+#             single = ([view.id()] == [v.id() for v in w.views_in_group(0)] or
+#                       [view.id()] == [v.id() for v in w.views_in_group(1)])
+#         if w.num_groups() == 2 and single:
+#             # without timeout ST may crash
+#             sublime.set_timeout(lambda: w.set_layout({"cols": [0.0, 1.0], "rows": [0.0, 1.0], "cells": [[0, 0, 1, 1]]}), 300)
 
 
 def is_any_dired_in_group(window, group):
@@ -516,41 +516,41 @@ def is_any_dired_in_group(window, group):
     return any(v.settings().get('syntax') == syntax for v in window.views_in_group(group))
 
 
-class DiredMoveOpenOrNewFileToRightGroup(EventListener):
-    def on_activated(self, view):
-        '''
-        Trick to prevent unexpected movements (e.g. when switching project in
-        current window; or restart)
-        Reason why the whole logic shall not be run on_activated, is
-        user should be able to explicitly put any view in left group
-        no matter what, e.g. using keybinding or drag&drop
+# class DiredMoveOpenOrNewFileToRightGroup(EventListener):
+#     def on_activated(self, view):
+#         '''
+#         Trick to prevent unexpected movements (e.g. when switching project in
+#         current window; or restart)
+#         Reason why the whole logic shall not be run on_activated, is
+#         user should be able to explicitly put any view in left group
+#         no matter what, e.g. using keybinding or drag&drop
 
-        self.MOVE is boolean
-        '''
-        w = sublime.active_window()
-        self.MOVE = w and is_any_dired_in_group(w, 0)
+#         self.MOVE is boolean
+#         '''
+#         w = sublime.active_window()
+#         self.MOVE = w and is_any_dired_in_group(w, 0)
 
-    def on_new(self, view):
-        if not self.MOVE:
-            return
-        w = sublime.active_window()
-        if w.num_groups() < 2:
-            return
-        if is_any_dired_in_group(w, 0):
-            if w.active_group() == 0:
-                # at this point views are exist, so we cannot avoid the use of
-                # set_view_index, but ST2 return None if group has no views
-                # ST3 return None if group has active image’s view
-                avig1 = w.active_view_in_group(1)
-                if avig1:
-                    _group, active_view_index_in_other_group = w.get_view_index(avig1)
-                    index = active_view_index_in_other_group + 1
-                else:
-                    index = 0
-                sublime.set_timeout(lambda: w.set_view_index(view, 1, index), 1)
+#     def on_new(self, view):
+#         if not self.MOVE:
+#             return
+#         w = sublime.active_window()
+#         if w.num_groups() < 2:
+#             return
+#         if is_any_dired_in_group(w, 0):
+#             if w.active_group() == 0:
+#                 # at this point views are exist, so we cannot avoid the use of
+#                 # set_view_index, but ST2 return None if group has no views
+#                 # ST3 return None if group has active image’s view
+#                 avig1 = w.active_view_in_group(1)
+#                 if avig1:
+#                     _group, active_view_index_in_other_group = w.get_view_index(avig1)
+#                     index = active_view_index_in_other_group + 1
+#                 else:
+#                     index = 0
+#                 sublime.set_timeout(lambda: w.set_view_index(view, 1, index), 1)
 
-    def on_load(self, view):
-        self.on_new(view)
+#     def on_load(self, view):
+#         self.on_new(view)
 
 
 # TOOLS #############################################################

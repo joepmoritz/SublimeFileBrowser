@@ -397,7 +397,7 @@ class DiredCopyFilePathsCommand(TextCommand, DiredBaseCommand):
             return sublime.status_message('Nothing chosen')
 
         if which == 'file':
-            filenames = [basename(f) for f in filenames]
+            filenames = [basename(f.rstrip('/')) for f in filenames]
         elif which == 'directory':
             filenames = [dirname(f) for f in filenames]
 
